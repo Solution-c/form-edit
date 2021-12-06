@@ -4,6 +4,8 @@ from bson.objectid import ObjectId
 from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
+from pymongo import ReturnDocument
+
 from database import client
 from survey.schemas import Survey
 
@@ -15,14 +17,13 @@ router = APIRouter(prefix="/survey", tags=[""])
 @router.post("/", status_code=201, response_model=Survey)
 async def create(request: Survey) -> dict:
     new_article = await collection.insert_one(jsonable_encoder(request))
-    created_article = await collection.find_one(
-        {"_id": new_article.inserted_id}
+
+    document = await collection.find_one_and_update(
+        {"_id": new_article.inserted_id},
+        {"$set":{"id": str(new_article.inserted_id)}},
+        return_document=ReturnDocument.AFTER,
     )
-    created_article["id"] = str(created_article["_id"])
-    await collection.find_one_and_update(
-        {"_id": created_article["_id"]}, {"$set": created_article}
-    )
-    return created_article
+    return document
 
 
 @router.get("/", response_model=Dict[str, List[Survey]])
@@ -44,12 +45,9 @@ async def update(id: str, request: dict):
             status_code=404,
             detail=f"No survey is found by provided id: {id}",
         )
-    survey["id"] = str(survey["_id"])
 
     survey = {**survey, **request}
-    await collection.find_one_and_update(
-        {"_id": survey["_id"]}, {"$set": survey}
-    )
+    await collection.find_one_and_update({"_id": survey["_id"]}, {"$set": survey})
 
     return {"msg": f"A survey of id {id} is updated."}
 

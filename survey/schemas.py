@@ -40,11 +40,12 @@ class OptionalQuestion(BaseQuestion):
     def __init__(
         self,
         title: str,
+        type: str,
         options: list,
         required=False,
         answer: Optional[str] = None,
     ):
-        super().__init__(title, required, answer)
+        super().__init__(title, type, required, answer)
         self.options = options
 
 
@@ -58,3 +59,6 @@ class Survey(BaseModel):
     data: List[
         Union[BaseQuestion, TextQuestion, OptionalQuestion, FileQuesiton]
     ]
+
+class Response(Survey):
+    survey_id: str
