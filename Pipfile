@@ -9,6 +9,7 @@ pymongo = "*"
 python-dotenv = "*"
 motor = "*"
 uvicorn = {extras = ["standard"], version = "*"}
+python-multipart = "*"
 
 [dev-packages]
 black = "*"
