@@ -11,6 +11,7 @@ class BaseQuestion:
         self.title = title
         self.required = required
         self.answer = answer
+        self.type = __class__.__name__
 
     @classmethod
     def __get_validators__(cls):
@@ -51,6 +52,4 @@ class FileQuesiton(BaseQuestion):
 class Survey(BaseModel):
     id: Optional[str]
     title: str
-    data: List[
-        Union[BaseQuestion, TextQuestion, OptionalQuestion, FileQuesiton]
-    ]
+    data: List[Union[BaseQuestion, TextQuestion, OptionalQuestion, FileQuesiton]]
