@@ -5,7 +5,11 @@ from pydantic import BaseModel
 
 class BaseQuestion:
     def __init__(
-        self, title: str, type: str, required: bool = False, answer: Optional[str] = None
+        self,
+        title: str,
+        type: str,
+        required: bool = False,
+        answer: Optional[str] = None,
     ):
         self.title = title
         self.required = required
